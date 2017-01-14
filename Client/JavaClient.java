@@ -39,6 +39,11 @@ public class JavaClient {
              String hp = inputHP.nextLine();
              String waktuTerkirim = waktu.getWaktu()+" "+waktu.getTanggal();
 
+             //enkripsi base64
+             byte[] bytesChat = chat.getBytes("UTF-8"); //konversi chat yg telah diinput kedalam byte  
+             String encodedBytes = Base64.getEncoder().encodeToString(bytesChat); //lakukan encode(enkripsi base64)
+             
+              
              XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
              //config.setServerURL(new URL("http://localhost/arpc/index.php"));
              //config.setServerURL(new URL("http://192.168.1.7/Deon/a/index.php"));
@@ -49,17 +54,13 @@ public class JavaClient {
              String result = (String) client.execute("username", params);
              String chatText = (String) client.execute("chat", params);
              String timestamp = (String) client.execute("timestamp",params);
-             System.out.println(timestamp+" Terkirim");
-             System.out.println(result);
-             System.out.println(chatText);
+             
+             byte[] decodeChat = Base64.getDecoder().decode(chatText);
 
-          /*   config.setServerURL(new URL("http://127.0.0.1/arpc/index.php"));
-             config.setConnectionTimeout(xmlrpcConnTimeout);
-             config.setReplyTimeout(xmlrpcReplyTimeout);
-             client.setConfig(config);*/
-
-
-
+             System.out.println("Pengirim : "+result); //no handphone
+             System.out.println("Chat unDecoded: "+chatText); //chat sebelum di decode
+             System.out.println("Chat Decoded : "+ new String(decodeChat)); //chat setelah di decode
+             System.out.println(timestamp+" Terkirim"); //waktu pengiriman
          } catch (Exception exception) {
              System.err.println("JavaClient: "+ exception);
          }
